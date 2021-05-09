@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour, Car
+public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
     public Transform wheel;
@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour, Car
 
     private float vibrationTimer = 0f;
     private float vibrationCoolDown = 2f;
+
+    public int collisionPushForce = 200;
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -29,37 +31,32 @@ public class PlayerController : MonoBehaviour, Car
         vibrationTimer += Time.deltaTime;
         if (!IsEleminated)
         {
+            //HandlePCInput();
             float distance = Vector3.Distance(transform.position, center.position);
             if (distance > 30)
             {
                 GetEliminated();
             }
-            //HandleInput();
             if (accelerating)
             {
-                rb.AddRelativeForce(Vector3.forward * 16);
+                Accelerate();
             }
             else if(decelerating)
             {
-                rb.AddRelativeForce(Vector3.back * 15);
+                Decelerate();
+            }
+            if(accelerating || decelerating)
+            {
+                if (isTurningRight)
+                {
+                    TurnRight();
+                }
+                else if (isTurningLeft)
+                {
+                    TurnLeft();
+                }
             }
 
-            if (isTurningRight)
-            {
-                transform.Rotate(new Vector3(0, 1, 0), 3);
-                if (wheel.localRotation.z > -0.5)
-                {
-                    wheel.Rotate(new Vector3(0, 0, -1), 2);
-                }
-            }
-            else if (isTurningLeft)
-            {
-                if (wheel.localRotation.z < 0.5)
-                {
-                    wheel.Rotate(new Vector3(0, 0, 1), 2);
-                }
-                transform.Rotate(new Vector3(0, 1, 0), -3);
-            }
         }
         
     }
@@ -72,54 +69,51 @@ public class PlayerController : MonoBehaviour, Car
         IsEleminated = true;
     }
 
-    private void HandleInput()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            Accelerate();
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            Decelerate();
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            TurnRight();
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            TurnLeft();
-        }
-    }
+    //private void HandlePCInput()
+    //{
+    //    if (Input.GetKey(KeyCode.W))
+    //    {
+    //        Accelerate();
+    //    }
+    //    if (Input.GetKey(KeyCode.S))
+    //    {
+    //        Decelerate();
+    //    }
+    //    if (Input.GetKey(KeyCode.D))
+    //    {
+    //        TurnRight();
+    //    }
+    //    if (Input.GetKey(KeyCode.A))
+    //    {
+    //        TurnLeft();
+    //    }
+    //}
 
     public void Accelerate()
     {
-        print(rb.gameObject.GetInstanceID());
-        accelerating = true;
-        //rb.AddRelativeForce(Vector3.forward * 16);       
+        rb.AddRelativeForce(Vector3.forward * 16);
     }
     public void Decelerate()
     {
-        decelerating = true;
-        //rb.AddRelativeForce(Vector3.back * 15);
+
+        rb.AddRelativeForce(Vector3.back * 15);
     }
     public void TurnRight()
     {
-        isTurningRight = true;
-        //transform.Rotate(new Vector3(0, 1, 0), 3);
-        //if (wheel.localRotation.z > -0.5)
-        //{
-        //    wheel.Rotate(new Vector3(0, 0, -1), 2);
-        //}
+
+        transform.Rotate(new Vector3(0, 1, 0), 3);
+        if (wheel.localRotation.z > -0.5)
+        {
+            wheel.Rotate(new Vector3(0, 0, -1), 2);
+        }
     }
     public void TurnLeft()
     {
-        isTurningLeft = true;
-        //if (wheel.localRotation.z < 0.5)
-        //{
-        //    wheel.Rotate(new Vector3(0, 0, 1), 2);
-        //}
-        //transform.Rotate(new Vector3(0, 1, 0), -3);
+        if (wheel.localRotation.z < 0.5)
+        {
+            wheel.Rotate(new Vector3(0, 0, 1), 2);
+        }
+        transform.Rotate(new Vector3(0, 1, 0), -3);
     }
 
     public void Stop()
@@ -142,23 +136,17 @@ public class PlayerController : MonoBehaviour, Car
                 Handheld.Vibrate();
                 vibrationTimer = 0f;
             }
+
             Vector3 dir = collision.contacts[0].point - transform.position;
-            dir = -dir.normalized;
-            rb.AddForce(dir * 200);
-            if(rb.velocity.y<1)
-            rb.AddRelativeForce(Vector3.up * 50);
+            dir = -dir.normalized;      //push away from collision point
+            rb.AddForce(dir * collisionPushForce);
+
+            if (rb.velocity.y < 1)      //prevent jumping too much
+            {
+                rb.AddRelativeForce(Vector3.up * 50); //get shaken
+            }
+
         }
 
     }
-
-    //private void OnCollisionStay(Collision collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Enemy"))
-    //    {
-    //        Vector3 dir = collision.contacts[0].point - transform.position;
-    //        dir = -dir.normalized;
-    //        rb.AddForce(dir * 100);
-    //    }
-
-    //}
 }

@@ -7,38 +7,22 @@ public class TurnButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     public PlayerController player;
     public bool isRight;
-    //void Update()
-    //{
-    //    if (Input.GetMouseButton(0))
-    //    {
-    //        if(player.accelerating || player.decelerating)
-    //        {
-    //            if (isRight)
-    //            {
-    //                player.TurnRight();
-    //            }
-    //            else
-    //            {
-    //                player.TurnLeft();
-    //            }
-    //        }
-    //    }
-    //}
 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (isRight)
         {
-            player.TurnRight();
+            player.isTurningRight = true;
         }
         else
         {
-            player.TurnLeft();
+            player.isTurningLeft = true;
         }
 
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        player.StopTurn();
+        player.isTurningRight = false;
+        player.isTurningLeft = false;
     }
 }

@@ -287,12 +287,10 @@
 -r:"Library/Bee/artifacts/1300b0aP.dag/Unity.VisualScripting.State.ref.dll"
 -r:"Library/Bee/artifacts/1300b0aP.dag/UnityEngine.UI.ref.dll"
 "Assets/AccelerateButton.cs"
-"Assets/Car.cs"
 "Assets/EnemyAIController.cs"
 "Assets/GameManager.cs"
 "Assets/PlayerController.cs"
 "Assets/TurnButton.cs"
-"Assets/WinScreen.cs"
 -langversion:8.0
 
 /deterministic

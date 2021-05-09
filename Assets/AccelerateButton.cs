@@ -7,38 +7,23 @@ public class AccelerateButton : MonoBehaviour, IPointerDownHandler, IPointerUpHa
 {
     public PlayerController player;
     public bool isAccelerate;
-    //void FixedUpdate()
-    //{
-    //    if (Input.GetMouseButton(0))
-    //    {
-
-    //        if (isAccelerate)
-    //        {
-    //            player.Accelerate();
-    //        }
-    //        else
-    //        {
-    //            player.Decelerate();
-    //        }
-
-    //    }
-    //}
 
     public void OnPointerDown(PointerEventData eventData)
     {
         if (isAccelerate)
         {
-            player.Accelerate();
+            player.accelerating = true;
         }
         else
         {
-            player.Decelerate();
+            player.decelerating = true;
         }
 
     }
     public void OnPointerUp(PointerEventData eventData)
     {
-        player.Stop();
+        player.accelerating = false;
+        player.decelerating = false;
     }
 
 }

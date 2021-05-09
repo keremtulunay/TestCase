@@ -17,13 +17,22 @@ public class GameManager : MonoBehaviour
     public AudioSource audioSource;
     void Start()
     {
+        AddCarsToList();
+        PlayRandomSong();
+    }
+
+    private void AddCarsToList()
+    {
         cars = new List<GameObject>();
-        foreach(EnemyAIController gameObject in FindObjectsOfType<EnemyAIController>())
+        foreach (EnemyAIController gameObject in FindObjectsOfType<EnemyAIController>())
         {
             cars.Add(gameObject.gameObject);
         }
         cars.Add(FindObjectOfType<PlayerController>().gameObject);
+    }
 
+    private void PlayRandomSong()
+    {
         int randomMusic = Random.Range(0, gameMusics.Length);
         audioSource.PlayOneShot(gameMusics[randomMusic]);
     }
@@ -35,7 +44,6 @@ public class GameManager : MonoBehaviour
         {
             foreach(GameObject car in cars)
             {
-                print(car.name);
                 winner = car;
             }
             winner.GetComponent<Rigidbody>().isKinematic = true;
@@ -48,14 +56,12 @@ public class GameManager : MonoBehaviour
 
     public void showWinScreen()
     {
-        print("win");
         winScreen.SetActive(true);
         audioSource.Stop();
         audioSource.PlayOneShot(winMusic);
     }
     public void showLoseScreen()
     {
-        print("lose");
         loseScreen.SetActive(true);
         audioSource.Stop();
         audioSource.PlayOneShot(loseMusic);
